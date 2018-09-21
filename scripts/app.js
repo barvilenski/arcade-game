@@ -6,6 +6,7 @@ const numColumns = 9;
 class Player {
   constructor() {
     this.enabled = true;
+    this.gemsCounter = 0;
     this.xPosition = tileWidth * 4;
     this.yPosition = tileHeight * 6;
     this.sprite = 'images/char-boy.png';
@@ -28,6 +29,10 @@ class Player {
     }
   }
 
+  takeGem() {
+    this.gemsCounter++;
+  }
+
   die() {
     this.enabled = false;
     this.xPosition = tileWidth * 4;
@@ -48,8 +53,8 @@ class Player {
 
 class Enemy {
   constructor() {
-    this.xPosition = -tileWidth;
-    this.yPosition = (Math.floor(Math.random() * 5) + 1 ) * tileHeight;
+    this.xPosition = tileWidth * -1;
+    this.yPosition = tileHeight * (Math.floor(Math.random() * 5) + 1);
     this.speed = Math.floor(Math.random() * 301) + 100;
     this.sprite = 'images/enemy-bug.png';
   }
@@ -63,6 +68,24 @@ class Enemy {
 
   render() {
     ctx.drawImage(Resources.get(this.sprite), this.xPosition, this.yPosition - 22);
+  }
+}
+
+class Gem {
+  constructor() {
+    this.xPosition = tileWidth * 4;
+    this.yPosition = tileHeight * 4;
+    this.sprite = 'images/gem-blue.png';
+  }
+
+  respawn() {
+    this.xPosition = tileWidth * Math.floor(Math.random() * 9);
+    this.yPosition = tileHeight * (Math.floor(Math.random() * 5) + 1);
+    this.sprite = 'images/gem-blue.png';
+  }
+
+  render() {
+    ctx.drawImage(Resources.get(this.sprite), this.xPosition + 17, this.yPosition + 18, 68, 110);
   }
 }
 
@@ -80,4 +103,5 @@ document.addEventListener('keyup', function(e) {
 });
 
 let player = new Player();
-let allEnemies = [new Enemy(), new Enemy(), new Enemy(), new Enemy(), new Enemy()];
+let allEnemies = [new Enemy(), new Enemy()];
+let gem = new Gem();

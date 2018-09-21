@@ -55,6 +55,11 @@ var Engine = (function(global) {
         player.die();
       }
     });
+
+    if (gem.yPosition === player.yPosition && gem.xPosition === player.xPosition) {
+      player.takeGem();
+      gem.respawn();
+    }
   }
 
   /* This function loops through the game objects,
@@ -100,6 +105,7 @@ var Engine = (function(global) {
    * it calls their render() methods in order to draw them on the canvas.
    */
   function renderEntities() {
+    gem.render();
     allEnemies.forEach(function(enemy) {
       enemy.render();
     });
@@ -120,7 +126,10 @@ var Engine = (function(global) {
       'images/block-grass.png',
       'images/block-stone.png',
       'images/enemy-bug.png',
-      'images/char-boy.png'
+      'images/char-boy.png',
+      'images/gem-blue.png',
+      'images/gem-green.png',
+      'images/gem-orange.png'
   ]);
   Resources.onReady(init);
 
