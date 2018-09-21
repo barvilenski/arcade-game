@@ -6,7 +6,7 @@ const numColumns = 9;
 class Player {
   constructor() {
     this.xPosition = tileWidth * 4;
-    this.yPosition = tileHeight * 0;
+    this.yPosition = tileHeight * 6;
     this.sprite = 'images/char-boy.png';
   }
 
