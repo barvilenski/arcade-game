@@ -15,7 +15,7 @@
     /* If an array of images was passed, loop through the values and call our image loader on each of them.
      * Otherwise, a string was passed, so call our image loader directly.
      */
-    if(urlOrArr instanceof Array) {
+    if (urlOrArr instanceof Array) {
       urlOrArr.forEach(function(url) {
         _load(url);
       });
@@ -34,13 +34,13 @@
     } else {
       var img = new Image();
       img.onload = function() {
-      /* Once our image has properly loaded, add it to our cache.
-       * After the image was loaded and cached, call all of the onReady() callbacks.
-       */
-      resourceCache[url] = img;
-      if(isReady()) {
-        readyCallbacks.forEach(function(func) { func(); });
-      }
+        /* Once our image has properly loaded, add it to our cache.
+         * After the image was loaded and cached, call all of the onReady() callbacks.
+         */
+        resourceCache[url] = img;
+        if(isReady()) {
+          readyCallbacks.forEach(function(func) { func(); });
+        }
       };
 
       resourceCache[url] = false;
