@@ -43,7 +43,18 @@ var Engine = (function(global) {
   // This function calls all of the functions which may need to update entity's data.
   function update(dt) {
     updateEntities(dt);
-    // checkCollisions();
+    checkCollisions();
+  }
+
+  /* This function checks if there is any collision between game objects.
+   * If so, it updates the game accordingly.
+   */
+  function checkCollisions() {
+    allEnemies.forEach(function(enemy) {
+      if (enemy.yPosition === player.yPosition && Math.abs(enemy.xPosition - player.xPosition) <= 80) {
+        player.die();
+      }
+    });
   }
 
   /* This function loops through the game objects,

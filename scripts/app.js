@@ -5,6 +5,7 @@ const numColumns = 9;
 
 class Player {
   constructor() {
+    this.enabled = true;
     this.xPosition = tileWidth * 4;
     this.yPosition = tileHeight * 6;
     this.sprite = 'images/char-boy.png';
@@ -25,6 +26,19 @@ class Player {
         this.xPosition += (this.xPosition < tileWidth * 8) ? tileWidth : 0;
         break;
     }
+  }
+
+  die() {
+    this.enabled = false;
+    this.xPosition = tileWidth * 4;
+    this.yPosition = tileHeight * 8;
+
+    const self = this;
+    setTimeout(function () {
+      self.xPosition = tileWidth * 4;
+      self.yPosition = tileHeight * 6;
+      self.enabled = true;
+    }, 1000);
   }
 
   render() {
@@ -60,7 +74,9 @@ document.addEventListener('keyup', function(e) {
         40: 'down'
   };
 
-  player.handleInput(allowedKeys[e.keyCode]);
+  if (player.enabled) {
+    player.handleInput(allowedKeys[e.keyCode]);
+  }
 });
 
 let player = new Player();
