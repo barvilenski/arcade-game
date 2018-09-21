@@ -14,8 +14,8 @@ var Engine = (function(global) {
       ctx = canvas.getContext('2d'),
       lastTime;
 
-  canvas.width = 505;
-  canvas.height = 606;
+  canvas.width = 909;
+  canvas.height = 707;
   doc.body.appendChild(canvas);
 
   /* This function serves as the kickoff point for the game loop itself
@@ -59,21 +59,22 @@ var Engine = (function(global) {
   function render() {
     // This array holds the relative URL to the image used for each row of the game level.
     var rowImages = [
-          'images/block-water.png',   // Top row is water
-          'images/block-stone.png',   // Row 1 of 3 of stone
-          'images/block-stone.png',   // Row 2 of 3 of stone
-          'images/block-stone.png',   // Row 3 of 3 of stone
-          'images/block-grass.png',   // Row 1 of 2 of grass
-          'images/block-grass.png'    // Row 2 of 2 of grass
+          'images/block-grass.png',   // Row 1 is grass
+          'images/block-stone.png',   // Row 2 is stone
+          'images/block-stone.png',   // Row 3 is stone
+          'images/block-stone.png',   // Row 4 is stone
+          'images/block-stone.png',   // Row 5 is stone
+          'images/block-stone.png',   // Row 6 is stone
+          'images/block-grass.png'    // Row 7 is grass
         ],
-        numRows = 6,
-        numCols = 5,
+        numRows = 7,
+        numCols = 9,
         row, col;
 
     /* Before drawing, clear existing canvas.
      * Then, draw each portion of the "game level grid" one after another.
      */
-    ctx.clearRect(0,0,canvas.width,canvas.height)
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
     for (row = 0; row < numRows; row++) {
       for (col = 0; col < numCols; col++) {
         // By using the Resources helper to refer to images we get the benefits of caching these images
@@ -105,9 +106,8 @@ var Engine = (function(global) {
    * Then, set init as the callback method, so when these images are loaded the game will start.
    */
   Resources.load([
-      'images/block-stone.png',
-      'images/block-water.png',
       'images/block-grass.png',
+      'images/block-stone.png',
       'images/enemy-bug.png',
       'images/char-boy.png'
   ]);
