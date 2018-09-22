@@ -1,12 +1,16 @@
+const gemsNumber = document.querySelector('.gems-value');
+const timerMinutes = document.querySelector('.minutes');
+const timerSeconds = document.querySelector('.seconds');
+const heartsArray = document.querySelectorAll('.fa-heart');
 const tileWidth = 101;
 const tileHeight = 83;
-const numRows = 7;
-const numColumns = 9;
+let gameTimer, secondsCounter = 0;
 
 class Player {
   constructor() {
     this.enabled = true;
     this.gemsCounter = 0;
+    this.hearts = 3;
     this.xPosition = tileWidth * 4;
     this.yPosition = tileHeight * 6;
     this.sprite = 'images/char-boy.png';
@@ -31,12 +35,19 @@ class Player {
 
   takeGem() {
     this.gemsCounter++;
+    gemsNumber.textContent = this.gemsCounter;
   }
 
   die() {
     this.enabled = false;
     this.xPosition = tileWidth * 4;
     this.yPosition = tileHeight * 8;
+
+    if (this.hearts > 0) {
+      this.hearts--;
+      heartsArray[this.hearts].classList.remove('fas');
+      heartsArray[this.hearts].classList.add('far');
+    }
 
     const self = this;
     setTimeout(function () {
@@ -101,6 +112,18 @@ document.addEventListener('keyup', function(e) {
     player.handleInput(allowedKeys[e.keyCode]);
   }
 });
+
+function setTime() {
+  secondsCounter++;
+  timerMinutes.textContent = padTime(parseInt(secondsCounter / 60));
+  timerSeconds.textContent = padTime(secondsCounter % 60);
+}
+
+function padTime(time) {
+  return time > 9 ? time : '0' + time;
+}
+
+gameTimer = setInterval(setTime, 1000);
 
 let player = new Player();
 let allEnemies = [new Enemy(), new Enemy()];
