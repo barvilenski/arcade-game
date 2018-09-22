@@ -30,6 +30,10 @@ footer, header, hgroup, menu, nav, section {
 }
 
 /* --------------- General Page Styles ---------------- */
+html {
+  height: 100%;
+}
+
 body {
   max-width: 910px;
   margin: 40px auto auto;
@@ -43,15 +47,22 @@ header {
 }
 
 .logo {
-  font-size: 32px;
+  font-size: 48px;
+  font-family: 'Faster One', cursive;
 }
 
 .game-stats {
   margin-left: auto;
   display: flex;
   align-items: flex-end;
+  font-size: 22px;
 }
 
 .timer, .hearts {
-  margin-left: 10px;
+  margin-left: 16px;
+}
+
+.timer-value, .gems-value {
+  font-size: 16px;
+  font-family: 'Press Start 2P', cursive;
 }
