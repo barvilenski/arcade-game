@@ -3,10 +3,11 @@ const timerMinutes = document.querySelector('.minutes');
 const timerSeconds = document.querySelector('.seconds');
 const heartsArray = document.querySelectorAll('.fa-heart');
 const instructionsScreen = document.querySelector('.game-instructions');
+const resultsScreen = document.querySelector('.game-results');
 const tileWidth = 101;
 const tileHeight = 83;
-let gameTimer, secondsCounter = 0;
-let gameStarted = false;
+let gameTimer, secondsCounter = 120;
+let gameStarted = false, gameEnded = false;
 
 class Player {
   constructor() {
@@ -51,12 +52,16 @@ class Player {
       heartsArray[this.hearts].classList.add('far');
     }
 
-    const self = this;
-    setTimeout(function () {
-      self.xPosition = tileWidth * 4;
-      self.yPosition = tileHeight * 6;
-      self.enabled = true;
-    }, 1000);
+    if (this.hearts === 0) {
+      endGame();
+    } else {
+      const self = this;
+      setTimeout(function () {
+        self.xPosition = tileWidth * 4;
+        self.yPosition = tileHeight * 6;
+        self.enabled = true;
+      }, 1000);
+    }
   }
 
   render() {
@@ -109,25 +114,44 @@ class Gem {
 }
 
 function setTime() {
-  secondsCounter++;
+  secondsCounter--;
   timerMinutes.textContent = padTime(parseInt(secondsCounter / 60));
   timerSeconds.textContent = padTime(secondsCounter % 60);
+
+  if (secondsCounter === 0) {
+    endGame();
+  }
 }
 
 function padTime(time) {
   return time > 9 ? time : '0' + time;
 }
 
-function initGame() {
+function startGame() {
   instructionsScreen.classList.add('game-instructions-disabled');
   for (enemy of allEnemies) {
     enemy.randomizeProperties();
   }
   gameTimer = setInterval(setTime, 1000);
+  gameStarted = true;
+}
+
+function endGame() {
+  clearInterval(gameTimer);
+  player.enabled = false;
+  for (enemy of allEnemies) {
+    enemy.speed = 0;
+  }
+  gameEnded = true;
+  resultsScreen.classList.remove('game-results-disabled');
+}
+
+function restartGame() {
+  window.location.reload(false);
 }
 
 let gem = new Gem();
-let allEnemies = [new Enemy(), new Enemy()];
+let allEnemies = [new Enemy(), new Enemy(), new Enemy(), new Enemy(), new Enemy(), new Enemy()];
 let player = new Player();
 
 document.addEventListener('keyup', function(e) {
@@ -140,13 +164,16 @@ document.addEventListener('keyup', function(e) {
   };
 
   if (!gameStarted && allowedKeys[e.keyCode] === 'enter') {
-    initGame();
-    gameStarted = true;
+    startGame();
   }
 
   if (gameStarted) {
     if (player.enabled) {
       player.handleInput(allowedKeys[e.keyCode]);
     }
+  }
+
+  if (gameStarted && gameEnded && allowedKeys[e.keyCode] === 'enter') {
+    restartGame();
   }
 });
