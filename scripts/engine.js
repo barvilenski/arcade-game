@@ -1,13 +1,10 @@
 /* Engine.js
- * This file provides the game loop functionality (update entities and render),
- * draws the initial game board on the screen, and then calls the update and
+ * This file provides the game loop functionality (update and render entities).
+ * It draws the initial game board on the screen and then calls the update and
  * render methods on the game objects (defined in app.js).
  */
 
 var Engine = (function(global) {
-  /* Predefine variables that will be used within this scope,
-   * create the canvas element, and add it to the DOM.
-   */
   var doc = global.document,
       win = global.window,
       gameContainer = document.querySelector('.game-container'),
@@ -17,10 +14,10 @@ var Engine = (function(global) {
 
   canvas.width = 909;
   canvas.height = 707;
-  gameContainer.appendChild(canvas);
+  gameContainer.appendChild(canvas);  // Add the canvas to the DOM.
 
-  /* This function serves as the kickoff point for the game loop itself
-   * and handles properly calling the update and render methods.
+  /* This function serves as the kickoff point for the game loop.
+   * It handles calling the update and render methods.
    */
   function main() {
     // Get the time delta information which is required for smooth animation.
@@ -30,11 +27,11 @@ var Engine = (function(global) {
     update(dt);
     render();
 
-    lastTime = now;  // Used to determine the time delta for the next time main function is called.
-    win.requestAnimationFrame(main);  // Call main function again as soon as the browser is able to draw another frame.
+    lastTime = now;
+    win.requestAnimationFrame(main);
   }
 
-  // This function does some initial setup that should only occur once.
+  // This function does some initial setup that should only occur only once.
   function init() {
     reset();
     lastTime = Date.now();
@@ -48,7 +45,7 @@ var Engine = (function(global) {
   }
 
   /* This function checks if there is any collision between game objects.
-   * If so, it updates the game accordingly.
+   * If so, it updates the game objects' data accordingly.
    */
   function checkCollisions() {
     allEnemies.forEach(function(enemy) {
@@ -63,9 +60,7 @@ var Engine = (function(global) {
     }
   }
 
-  /* This function loops through the game objects,
-   * it calls their update() methods in order to update their data.
-   */
+  // This function loops through the game objects and updates their data.
   function updateEntities(dt) {
     allEnemies.forEach(function(enemy) {
       enemy.update(dt);
@@ -74,27 +69,24 @@ var Engine = (function(global) {
 
   // This function initially draws the "game level", and then draws the game objects.
   function render() {
-    // This array holds the relative URL to the image used for each row of the game level.
+    // This array holds the relative URL to the image used for each game level row.
     var rowImages = [
-          'images/block-grass.png',   // Row 1 is grass
-          'images/block-stone.png',   // Row 2 is stone
-          'images/block-stone.png',   // Row 3 is stone
-          'images/block-stone.png',   // Row 4 is stone
-          'images/block-stone.png',   // Row 5 is stone
-          'images/block-stone.png',   // Row 6 is stone
-          'images/block-grass.png'    // Row 7 is grass
+          'images/block-grass.png',  // Row 1 is grass
+          'images/block-stone.png',  // Row 2 is stone
+          'images/block-stone.png',  // Row 3 is stone
+          'images/block-stone.png',  // Row 4 is stone
+          'images/block-stone.png',  // Row 5 is stone
+          'images/block-stone.png',  // Row 6 is stone
+          'images/block-grass.png'   // Row 7 is grass
         ],
         numRows = 7,
         numCols = 9,
         row, col;
 
-    /* Before drawing, clear existing canvas.
-     * Then, draw each portion of the "game level grid" one after another.
-     */
+    // Clear the existing canvas, then draw each portion of the "game level grid" one after another.
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     for (row = 0; row < numRows; row++) {
       for (col = 0; col < numCols; col++) {
-        // By using the Resources helper to refer to images we get the benefits of caching these images
         ctx.drawImage(Resources.get(rowImages[row]), col * 101, row * 83);
       }
     }
@@ -102,15 +94,13 @@ var Engine = (function(global) {
     renderEntities();
   }
 
-  /* This function loops through the game objects,
-   * it calls their render() methods in order to draw them on the canvas.
-   */
+  // This function goes through the game objects and draws them on the canvas.
   function renderEntities() {
-    gem.render();
+    gem.render(17, 18, 68, 110);
     allEnemies.forEach(function(enemy) {
-      enemy.render();
+      enemy.render(0, -22);
     });
-    player.render();
+    player.render(0, -12);
   }
 
   /* This function does nothing. It is a good place to handle game reset states
@@ -120,7 +110,7 @@ var Engine = (function(global) {
     // nothing
   }
 
-  /* Load the images for drawing the game level.
+  /* Load the images for drawing the game.
    * Then, set init as the callback method, so when these images are loaded the game will start.
    */
   Resources.load([

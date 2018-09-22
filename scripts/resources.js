@@ -8,8 +8,8 @@
   var readyCallbacks = [];
 
   /* This is the publicly accessible image loading function. It accepts
-   * an array of strings pointing to image files or a string for a single
-   * image. It will call our private image loading function accordingly.
+   * either a single string or an array of strings pointing to image file\s
+   * It will call our private image loading function accordingly.
    */
   function load(urlOrArr) {
     /* If an array of images was passed, loop through the values and call our image loader on each of them.
@@ -26,23 +26,20 @@
 
   // This is our private image loading function.
   function _load(url) {
-    /* If this URL has been previously loaded, just return that image rather than re-loading the image.
-     * Otherwise, this URL has not been previously loaded, so load this image.
-     */
+    // If the URL has been previously loaded, just return the image. Otherwise, load the image.
     if(resourceCache[url]) {
       return resourceCache[url];
     } else {
       var img = new Image();
       img.onload = function() {
-        /* Once our image has properly loaded, add it to our cache.
-         * After the image was loaded and cached, call all of the onReady() callbacks.
+        /* Once our image has finished loading, add it to our cache.
+         * Then, call all of the onReady() callbacks.
          */
         resourceCache[url] = img;
         if(isReady()) {
           readyCallbacks.forEach(function(func) { func(); });
         }
       };
-
       resourceCache[url] = false;
       img.src = url;
     }
@@ -53,7 +50,7 @@
     return resourceCache[url];
   }
 
-  // This function determines if all of the requested images for loading have been properly loaded.
+  // This function determines if all of the requested images for loading have finished loading.
   function isReady() {
     var ready = true;
     for(var k in resourceCache) {
@@ -64,7 +61,7 @@
     return ready;
   }
 
-  // This function will add a function to the callback stack once all requested images are loaded.
+  // This function will add a function to the callback stack of functions that will be executed once all the requested images are loaded.
   function onReady(func) {
     readyCallbacks.push(func);
   }

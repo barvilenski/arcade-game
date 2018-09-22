@@ -1,22 +1,32 @@
 const gemsNumber = document.querySelector('.gems-value');
-const timerMinutes = document.querySelector('.minutes');
-const timerSeconds = document.querySelector('.seconds');
+const timerMinutes = document.querySelector('.timer .minutes');
+const timerSeconds = document.querySelector('.timer .seconds');
 const heartsArray = document.querySelectorAll('.fa-heart');
 const instructionsScreen = document.querySelector('.game-instructions');
 const resultsScreen = document.querySelector('.game-results');
-const tileWidth = 101;
-const tileHeight = 83;
+const tileWidth = 101, tileHeight = 83;
+const gameStates = { notStarted: 0, started: 1, ended: 2 };
+let currentGameState = gameStates.notStarted;
 let gameTimer, secondsCounter = 120;
-let gameStarted = false, gameEnded = false;
 
-class Player {
+class GameObject {
+  constructor(sprite, xPosition, yPosition) {
+    this.sprite = sprite;
+    this.xPosition = xPosition;
+    this.yPosition = yPosition;
+  }
+
+  render(xOffset = 0, yOffset = 0, spriteWidth = 101, spriteHeight = 171) {
+    ctx.drawImage(Resources.get(this.sprite), this.xPosition + xOffset, this.yPosition + yOffset, spriteWidth, spriteHeight);
+  }
+}
+
+class Player extends GameObject {
   constructor() {
-    this.enabled = true;
-    this.gemsCounter = 0;
+    super('images/char-boy.png', tileWidth * 4, tileHeight * 6);
     this.hearts = 3;
-    this.xPosition = tileWidth * 4;
-    this.yPosition = tileHeight * 6;
-    this.sprite = 'images/char-boy.png';
+    this.gemsCounter = 0;
+    this.enabled = true;
   }
 
   handleInput(key) {
@@ -63,24 +73,18 @@ class Player {
       }, 1000);
     }
   }
-
-  render() {
-    ctx.drawImage(Resources.get(this.sprite), this.xPosition, this.yPosition - 12);
-  }
 }
 
-class Enemy {
+class Enemy extends GameObject {
   constructor() {
-    this.xPosition = tileWidth * -1;
-    this.yPosition = tileHeight * -1;
+    super('images/enemy-bug.png', tileWidth * -1, tileHeight * -1);
     this.speed = 0;
-    this.sprite = 'images/enemy-bug.png';
   }
 
   randomizeProperties() {
     this.xPosition = tileWidth * -1;
-    this.yPosition = tileHeight * (Math.floor(Math.random() * 5) + 1);
-    this.speed = Math.floor(Math.random() * 301) + 100;
+    this.yPosition = tileHeight * getRandomInt(1, 5);
+    this.speed = getRandomInt(100, 400);
   }
 
   update(dt) {
@@ -89,28 +93,23 @@ class Enemy {
       this.randomizeProperties();
     }
   }
-
-  render() {
-    ctx.drawImage(Resources.get(this.sprite), this.xPosition, this.yPosition - 22);
-  }
 }
 
-class Gem {
+class Gem extends GameObject {
   constructor() {
-    this.xPosition = tileWidth * 4;
-    this.yPosition = tileHeight * 3;
-    this.sprite = 'images/gem-blue.png';
+    super('images/gem-blue.png', tileWidth * 4, tileHeight * 3);
   }
 
   respawn() {
-    this.xPosition = tileWidth * Math.floor(Math.random() * 9);
-    this.yPosition = tileHeight * (Math.floor(Math.random() * 5) + 1);
-    this.sprite = 'images/gem-blue.png';
+    const gemColors = ['blue', 'green', 'orange'];
+    this.sprite = `images/gem-${gemColors[getRandomInt(0,2)]}.png`;
+    this.xPosition = tileWidth * getRandomInt(0, 8);
+    this.yPosition = tileHeight * getRandomInt(1, 5);
   }
+}
 
-  render() {
-    ctx.drawImage(Resources.get(this.sprite), this.xPosition + 17, this.yPosition + 18, 68, 110);
-  }
+function getRandomInt(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
 function setTime() {
@@ -129,11 +128,11 @@ function padTime(time) {
 
 function startGame() {
   instructionsScreen.classList.add('game-instructions-disabled');
+  gameTimer = setInterval(setTime, 1000);
   for (enemy of allEnemies) {
     enemy.randomizeProperties();
   }
-  gameTimer = setInterval(setTime, 1000);
-  gameStarted = true;
+  currentGameState = gameStates.started;
 }
 
 function endGame() {
@@ -142,8 +141,8 @@ function endGame() {
   for (enemy of allEnemies) {
     enemy.speed = 0;
   }
-  gameEnded = true;
   resultsScreen.classList.remove('game-results-disabled');
+  currentGameState = gameStates.ended;
 }
 
 function restartGame() {
@@ -151,8 +150,11 @@ function restartGame() {
 }
 
 let gem = new Gem();
-let allEnemies = [new Enemy(), new Enemy(), new Enemy(), new Enemy(), new Enemy(), new Enemy()];
 let player = new Player();
+let allEnemies = [];
+for (let i = 0; i < 6; i++) {
+  allEnemies.push(new Enemy());
+}
 
 document.addEventListener('keyup', function(e) {
   const allowedKeys = {
@@ -163,17 +165,21 @@ document.addEventListener('keyup', function(e) {
         40: 'down'
   };
 
-  if (!gameStarted && allowedKeys[e.keyCode] === 'enter') {
-    startGame();
-  }
-
-  if (gameStarted) {
-    if (player.enabled) {
-      player.handleInput(allowedKeys[e.keyCode]);
-    }
-  }
-
-  if (gameStarted && gameEnded && allowedKeys[e.keyCode] === 'enter') {
-    restartGame();
+  switch (currentGameState) {
+    case gameStates.notStarted:
+      if (allowedKeys[e.keyCode] === 'enter') {
+        startGame();
+      }
+      break;
+    case gameStates.started:
+      if (player.enabled) {
+        player.handleInput(allowedKeys[e.keyCode]);
+      }
+      break;
+    case gameStates.ended:
+      if (allowedKeys[e.keyCode] === 'enter') {
+        restartGame();
+      }
+      break;
   }
 });

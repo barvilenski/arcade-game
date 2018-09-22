@@ -16,8 +16,7 @@ time, mark, audio, video {
   padding: 0;
   border: 0;
   font-size: 100%;
-  font: inherit;
-  vertical-align: baseline;
+  vertical-align: bottom;
 }
 
 article, aside, details, figcaption, figure,
@@ -32,18 +31,18 @@ footer, header, hgroup, menu, nav, section {
 /* --------------- General Page Styles ---------------- */
 html {
   height: 100%;
+  line-height: 1;
+  user-select: none;
 }
 
 body {
   max-width: 910px;
-  margin: 40px auto auto;
-  line-height: 1;
+  margin: 50px auto auto;
 }
 
 /* --------------------- Header ----------------------- */
 header {
   display: flex;
-  user-select: none;
 }
 
 .logo {
@@ -52,10 +51,9 @@ header {
 }
 
 .game-stats {
-  margin-left: auto;
   display: flex;
   align-items: flex-end;
-  font-size: 22px;
+  margin-left: auto;
 }
 
 .timer, .hearts {
@@ -63,11 +61,10 @@ header {
 }
 
 .timer-value, .gems-value {
-  font-size: 16px;
   font-family: 'Press Start 2P', cursive;
 }
 
-/* ------------------ Instructions Screen ------------- */
+/* ----------- Instructions & Results Screens --------- */
 .game-instructions, .game-results {
   position: absolute;
   top: 400px;
