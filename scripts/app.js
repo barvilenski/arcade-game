@@ -2,9 +2,11 @@ const gemsNumber = document.querySelector('.gems-value');
 const timerMinutes = document.querySelector('.minutes');
 const timerSeconds = document.querySelector('.seconds');
 const heartsArray = document.querySelectorAll('.fa-heart');
+const instructionsScreen = document.querySelector('.game-instructions');
 const tileWidth = 101;
 const tileHeight = 83;
 let gameTimer, secondsCounter = 0;
+let gameStarted = false;
 
 class Player {
   constructor() {
@@ -65,15 +67,21 @@ class Player {
 class Enemy {
   constructor() {
     this.xPosition = tileWidth * -1;
+    this.yPosition = tileHeight * -1;
+    this.speed = 0;
+    this.sprite = 'images/enemy-bug.png';
+  }
+
+  randomizeProperties() {
+    this.xPosition = tileWidth * -1;
     this.yPosition = tileHeight * (Math.floor(Math.random() * 5) + 1);
     this.speed = Math.floor(Math.random() * 301) + 100;
-    this.sprite = 'images/enemy-bug.png';
   }
 
   update(dt) {
     this.xPosition += this.speed * dt;
     if (this.xPosition > tileWidth * 9) {
-      this.xPosition = -tileWidth;
+      this.randomizeProperties();
     }
   }
 
@@ -85,7 +93,7 @@ class Enemy {
 class Gem {
   constructor() {
     this.xPosition = tileWidth * 4;
-    this.yPosition = tileHeight * 4;
+    this.yPosition = tileHeight * 3;
     this.sprite = 'images/gem-blue.png';
   }
 
@@ -100,19 +108,6 @@ class Gem {
   }
 }
 
-document.addEventListener('keyup', function(e) {
-  const allowedKeys = {
-        37: 'left',
-        38: 'up',
-        39: 'right',
-        40: 'down'
-  };
-
-  if (player.enabled) {
-    player.handleInput(allowedKeys[e.keyCode]);
-  }
-});
-
 function setTime() {
   secondsCounter++;
   timerMinutes.textContent = padTime(parseInt(secondsCounter / 60));
@@ -123,8 +118,35 @@ function padTime(time) {
   return time > 9 ? time : '0' + time;
 }
 
-gameTimer = setInterval(setTime, 1000);
+function initGame() {
+  instructionsScreen.classList.add('game-instructions-disabled');
+  for (enemy of allEnemies) {
+    enemy.randomizeProperties();
+  }
+  gameTimer = setInterval(setTime, 1000);
+}
 
-let player = new Player();
-let allEnemies = [new Enemy(), new Enemy()];
 let gem = new Gem();
+let allEnemies = [new Enemy(), new Enemy()];
+let player = new Player();
+
+document.addEventListener('keyup', function(e) {
+  const allowedKeys = {
+        13: 'enter',
+        37: 'left',
+        38: 'up',
+        39: 'right',
+        40: 'down'
+  };
+
+  if (!gameStarted && allowedKeys[e.keyCode] === 'enter') {
+    initGame();
+    gameStarted = true;
+  }
+
+  if (gameStarted) {
+    if (player.enabled) {
+      player.handleInput(allowedKeys[e.keyCode]);
+    }
+  }
+});

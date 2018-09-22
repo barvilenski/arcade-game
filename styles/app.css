@@ -66,3 +66,27 @@ header {
   font-size: 16px;
   font-family: 'Press Start 2P', cursive;
 }
+
+/* ------------------ Instructions Screen ------------- */
+.game-instructions {
+  position: absolute;
+  top: 400px;
+  left: 0;
+  right: 0;
+  width: 80%;
+  max-width: 880px;
+  margin-left: auto;
+  margin-right: auto;
+  border-radius: 20px;
+  padding: 20px;
+  font-size: 16px;
+  font-family: 'Press Start 2P', cursive;
+  text-align: center;
+  background-color: #FFFFFF;
+  transition: opacity 1s;
+  user-select: none;
+}
+
+.game-instructions-disabled {
+  opacity: 0;
+}
