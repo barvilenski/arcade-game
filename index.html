@@ -4,8 +4,29 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Highway Chase</title>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+    <link rel="stylesheet" href="styles/app.css">
   </head>
   <body>
+    <header>
+      <h1 class="logo">Highway Chase</h1>
+      <div class="game-stats">
+        <div class="gems">
+          <i class="far fa-gem"></i>
+          <span class="gems-value">0</span>
+        </div>
+        <div class="timer">
+          <i class="far fa-clock"></i>
+          <span class="timer-value">00:00</span>
+        </div>
+        <div class="hearts">
+          <i class="fas fa-heart"></i>
+          <i class="fas fa-heart"></i>
+          <i class="fas fa-heart"></i>
+        </div>
+      </div>
+    </header>
+    <div class="game-container"></div>
     <script src="scripts/resources.js"></script>
     <script src="scripts/app.js"></script>
     <script src="scripts/engine.js"></script>
