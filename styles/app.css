@@ -16,7 +16,7 @@ time, mark, audio, video {
   padding: 0;
   border: 0;
   font-size: 100%;
-  vertical-align: bottom;
+  vertical-align: top;
 }
 
 article, aside, details, figcaption, figure,
@@ -31,7 +31,7 @@ footer, header, hgroup, menu, nav, section {
 /* --------------- General Page Styles ---------------- */
 html {
   height: 100%;
-  line-height: 1;
+  line-height: 1.2;
   user-select: none;
 }
 
@@ -67,16 +67,14 @@ header {
 /* ----------- Instructions & Results Screens --------- */
 .game-instructions, .game-results {
   position: absolute;
-  top: 400px;
+  top: 350px;
   left: 0;
   right: 0;
-  width: 80%;
-  max-width: 880px;
+  width: fit-content;
   margin-left: auto;
   margin-right: auto;
-  border-radius: 20px;
-  padding: 20px;
-  font-size: 16px;
+  border-radius: 10px;
+  padding: 24px;
   font-family: 'Press Start 2P', cursive;
   text-align: center;
   background-color: #FFFFFF;
@@ -86,4 +84,28 @@ header {
 
 .game-instructions-disabled, .game-results-disabled {
   opacity: 0;
+}
+
+.instructions-title, .results-title {
+  font-size: 32px;
+}
+
+.instructions-content, .results-stats {
+  background-color: lightgray;
+  border-radius: 10px;
+  padding: 10px;
+  margin-top: 14px;
+}
+
+.results-stats {
+  display: flex;
+  justify-content: space-around;
+}
+
+.results-score-label, .results-gems-label {
+  color: gray;
+}
+
+.instructions-start, .results-restart {
+  margin-top: 10px;
 }

@@ -4,6 +4,9 @@ const timerSeconds = document.querySelector('.timer .seconds');
 const heartsArray = document.querySelectorAll('.fa-heart');
 const instructionsScreen = document.querySelector('.game-instructions');
 const resultsScreen = document.querySelector('.game-results');
+const resultsTitle = document.querySelector('.results-title');
+const resultsScore = document.querySelector('.results-score-value');
+const resultsGems = document.querySelector('.results-gems-value');
 const tileWidth = 101, tileHeight = 83;
 const gameStates = { notStarted: 0, started: 1, ended: 2 };
 let currentGameState = gameStates.notStarted;
@@ -126,6 +129,10 @@ function padTime(time) {
   return time > 9 ? time : '0' + time;
 }
 
+function calculateScore() {
+  return ((player.gemsCounter * 300) + (player.hearts * 400));
+}
+
 function startGame() {
   instructionsScreen.classList.add('game-instructions-disabled');
   gameTimer = setInterval(setTime, 1000);
@@ -141,7 +148,19 @@ function endGame() {
   for (enemy of allEnemies) {
     enemy.speed = 0;
   }
+
+  const score = calculateScore();
+  if (score < 2000) {
+    resultsTitle.textContent = 'KEEP PRACTICING!'
+  } else if (score < 4000) {
+    resultsTitle.textContent = 'GOOD JOB!'
+  } else {
+    resultsTitle.textContent = 'GREAT, YOU ROCK!'
+  }
+  resultsScore.innerHTML = `${score}<i class="fas fa-coins"></i>`;
+  resultsGems.innerHTML = `${player.gemsCounter}<i class="far fa-gem"></i>`;
   resultsScreen.classList.remove('game-results-disabled');
+
   currentGameState = gameStates.ended;
 }
 
