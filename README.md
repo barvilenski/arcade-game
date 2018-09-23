@@ -12,6 +12,6 @@ In order to play the game just run the [live version](https://barvilenski.github
 
 ## Attributions
 
-* Base version of "engine.js" & "resources.js" - were supplied as part of [Udacity Frontend nanodegree](https://www.udacity.com/course/front-end-web-developer-nanodegree--nd001).
+* Base version of "engine.js" & "resources.js" - were supplied as part of [Udacity Frontend Nanodegree](https://www.udacity.com/course/front-end-web-developer-nanodegree--nd001).
 
-* The image assets - were supplied as part of [Udacity Frontend nanodegree](https://www.udacity.com/course/front-end-web-developer-nanodegree--nd001).
+* The image assets - were supplied as part of [Udacity Frontend Nanodegree](https://www.udacity.com/course/front-end-web-developer-nanodegree--nd001).
