@@ -51,19 +51,15 @@ class Player extends GameObject {
 
   takeGem() {
     this.gemsCounter++;
-    gemsNumber.textContent = this.gemsCounter;
+    updateGemsCounter();
   }
 
   die() {
     this.enabled = false;
     this.xPosition = tileWidth * 4;
     this.yPosition = tileHeight * 8;
-
-    if (this.hearts > 0) {
-      this.hearts--;
-      heartsArray[this.hearts].classList.remove('fas');
-      heartsArray[this.hearts].classList.add('far');
-    }
+    this.hearts--;
+    updateHeartsCounter();
 
     if (this.hearts === 0) {
       endGame();
@@ -80,8 +76,8 @@ class Player extends GameObject {
 
 class Enemy extends GameObject {
   constructor() {
-    super('images/enemy-bug.png', tileWidth * -1, tileHeight * -1);
-    this.speed = 0;
+    super('images/enemy-bug.png', tileWidth * -1, tileHeight * getRandomInt(1, 5));
+    this.speed = getRandomInt(100, 400);
   }
 
   randomizeProperties() {
@@ -111,6 +107,12 @@ class Gem extends GameObject {
   }
 }
 
+class Blood extends GameObject {
+  constructor(xPosition, yPosition) {
+    super('images/blood-splatter.png', xPosition, yPosition);
+  }
+}
+
 function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
@@ -129,6 +131,15 @@ function padTime(time) {
   return time > 9 ? time : '0' + time;
 }
 
+function updateGemsCounter() {
+  gemsNumber.textContent = player.gemsCounter;
+}
+
+function updateHeartsCounter() {
+  heartsArray[player.hearts].classList.remove('fas');
+  heartsArray[player.hearts].classList.add('far');
+}
+
 function calculateScore() {
   return ((player.gemsCounter * 300) + (player.hearts * 400));
 }
@@ -136,8 +147,8 @@ function calculateScore() {
 function startGame() {
   instructionsScreen.classList.add('game-instructions-disabled');
   gameTimer = setInterval(setTime, 1000);
-  for (enemy of allEnemies) {
-    enemy.randomizeProperties();
+  for (let i = 0; i < 6; i++) {
+    allEnemies.push(new Enemy());
   }
   currentGameState = gameStates.started;
 }
@@ -171,9 +182,7 @@ function restartGame() {
 let gem = new Gem();
 let player = new Player();
 let allEnemies = [];
-for (let i = 0; i < 6; i++) {
-  allEnemies.push(new Enemy());
-}
+let bloodSplatters = [];
 
 document.addEventListener('keyup', function(e) {
   const allowedKeys = {

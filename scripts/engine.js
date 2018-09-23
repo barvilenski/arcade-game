@@ -44,12 +44,20 @@ var Engine = (function(global) {
     checkCollisions();
   }
 
+  // This function loops through the game objects and updates their data.
+  function updateEntities(dt) {
+    allEnemies.forEach(function(enemy) {
+      enemy.update(dt);
+    });
+  }
+
   /* This function checks if there is any collision between game objects.
    * If so, it updates the game objects' data accordingly.
    */
   function checkCollisions() {
     allEnemies.forEach(function(enemy) {
       if (enemy.yPosition === player.yPosition && Math.abs(enemy.xPosition - player.xPosition) <= 80) {
+        bloodSplatters.push(new Blood(player.xPosition, player.yPosition));
         player.die();
       }
     });
@@ -58,13 +66,6 @@ var Engine = (function(global) {
       player.takeGem();
       gem.respawn();
     }
-  }
-
-  // This function loops through the game objects and updates their data.
-  function updateEntities(dt) {
-    allEnemies.forEach(function(enemy) {
-      enemy.update(dt);
-    });
   }
 
   // This function initially draws the "game level", and then draws the game objects.
@@ -96,6 +97,9 @@ var Engine = (function(global) {
 
   // This function goes through the game objects and draws them on the canvas.
   function renderEntities() {
+    bloodSplatters.forEach(function(blood) {
+      blood.render(0, -38);
+    });
     gem.render(17, 18, 68, 110);
     allEnemies.forEach(function(enemy) {
       enemy.render(0, -22);
@@ -120,7 +124,8 @@ var Engine = (function(global) {
       'images/char-boy.png',
       'images/gem-blue.png',
       'images/gem-green.png',
-      'images/gem-orange.png'
+      'images/gem-orange.png',
+      'images/blood-splatter.png'
   ]);
   Resources.onReady(init);
 
