@@ -9,6 +9,8 @@ const resultsScore = document.querySelector('.results-score-value');
 const resultsGems = document.querySelector('.results-gems-value');
 const tileWidth = 101, tileHeight = 83;
 const gameStates = { notStarted: 0, started: 1, ended: 2 };
+const deathSound = new Audio('sounds/explosion.wav');
+const collectGemSound = new Audio('sounds/collect-gem.wav');
 let currentGameState = gameStates.notStarted;
 let gameTimer, secondsCounter = 120;
 
@@ -50,11 +52,13 @@ class Player extends GameObject {
   }
 
   takeGem() {
+    collectGemSound.cloneNode().play();
     this.gemsCounter++;
     updateGemsCounter();
   }
 
   die() {
+    deathSound.play();
     this.enabled = false;
     this.xPosition = tileWidth * 4;
     this.yPosition = tileHeight * 8;
