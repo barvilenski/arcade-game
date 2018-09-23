@@ -16,6 +16,7 @@ time, mark, audio, video {
   padding: 0;
   border: 0;
   font-size: 100%;
+  font-weight: normal;
   vertical-align: top;
 }
 
@@ -33,11 +34,13 @@ html {
   height: 100%;
   line-height: 1.2;
   user-select: none;
+  background-color: #00a0c5;
+  background-image: linear-gradient(to top, #1a936f, #009b9a, #00a0c5, #009fe5, #6d99f2);
 }
 
 body {
   max-width: 910px;
-  margin: 50px auto auto;
+  margin: 80px auto auto;
 }
 
 /* --------------------- Header ----------------------- */
@@ -46,14 +49,27 @@ header {
 }
 
 .logo {
-  font-size: 48px;
-  font-family: 'Faster One', cursive;
+  font-size: 54px;
+  font-family: 'Frijole', cursive;
 }
 
 .game-stats {
   display: flex;
   align-items: flex-end;
   margin-left: auto;
+  font-size: 18px;
+}
+
+.gems {
+  color: #E9E6F2;
+}
+
+.timer {
+  color: #262C4C;
+}
+
+.hearts {
+  color: #CC3333;
 }
 
 .timer, .hearts {
@@ -64,10 +80,16 @@ header {
   font-family: 'Press Start 2P', cursive;
 }
 
+/* ------------------ Game Container ------------------ */
+.game-container {
+  position: absolute;
+  top: 110px;
+}
+
 /* ----------- Instructions & Results Screens --------- */
 .game-instructions, .game-results {
   position: absolute;
-  top: 350px;
+  top: 330px;
   left: 0;
   right: 0;
   width: fit-content;
