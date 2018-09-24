@@ -105,9 +105,8 @@ header {
   padding: 24px;
   font-family: 'Press Start 2P', cursive;
   text-align: center;
-  background-color: #FFFFFF;
+  background-color: white;
   transition: opacity 1s;
-  user-select: none;
 }
 
 .game-instructions-disabled, .game-results-disabled {

@@ -46,7 +46,7 @@ var Engine = (function(global) {
 
   // This function loops through the game objects and updates their data.
   function updateEntities(dt) {
-    allEnemies.forEach(function(enemy) {
+    enemies.forEach(function(enemy) {
       enemy.update(dt);
     });
   }
@@ -67,30 +67,29 @@ var Engine = (function(global) {
       }
     });
 
-    allEnemies.forEach(function(enemy) {
+    enemies.forEach(function(enemy) {
       if (enemy.yPosition === player.yPosition && Math.abs(enemy.xPosition - player.xPosition) <= 80) {
         bloodSplatters.push(new Blood(player.xPosition, player.yPosition));
         player.die();
       }
     });
 
-    if (levelSpot.yPosition === player.yPosition && levelSpot.xPosition === player.xPosition && player.hasKey) {
-      player.enabled = false;
-      player.xPosition = tileWidth * 4;
-      player.yPosition = tileHeight * 8;
-      friend.xPosition = tileWidth * -1;
-      friend.yPosition = tileHeight * -1;
-      setTimeout(levelUp, 1000);
-    }
-
     if (gem.yPosition === player.yPosition && gem.xPosition === player.xPosition) {
       player.takeGem();
       gem.respawn();
     }
 
-    if (key.yPosition === player.yPosition && key.xPosition === player.xPosition) {
+    if (!key.isHidden() && key.yPosition === player.yPosition && key.xPosition === player.xPosition) {
       player.takeKey();
       key.hide();
+    }
+
+    if (player.hasKey && levelSpot.yPosition === player.yPosition && levelSpot.xPosition === player.xPosition) {
+      player.hide();
+      if (levelSpot.level === 3) {
+        friend.hide();
+      }
+      setTimeout(levelUp, 1000);
     }
   }
 
@@ -134,7 +133,7 @@ var Engine = (function(global) {
     key.render(10, 10, 81, 137);
     friend.render(0, -12);
     player.render(0, -12);
-    allEnemies.forEach(function(enemy) {
+    enemies.forEach(function(enemy) {
       enemy.render(0, -22);
     });
   }
@@ -152,17 +151,17 @@ var Engine = (function(global) {
   Resources.load([
       'images/block-grass.png',
       'images/block-stone.png',
-      'images/enemy-bug.png',
       'images/char-boy.png',
+      'images/char-boy-key.png',
+      'images/char-cat-girl.png',
+      'images/enemy-bug.png',
+      'images/key.png',
       'images/gem-blue.png',
       'images/gem-green.png',
       'images/gem-orange.png',
-      'images/blood-splatter.png',
       'images/rock.png',
       'images/level-spot.png',
-      'images/key.png',
-      'images/char-boy-key.png',
-      'images/char-cat-girl.png'
+      'images/blood-splatter.png'
   ]);
   Resources.onReady(init);
 

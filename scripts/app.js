@@ -4,20 +4,34 @@ const timerSeconds = document.querySelector('.timer .seconds');
 const heartsArray = document.querySelectorAll('.fa-heart');
 const instructionsScreen = document.querySelector('.game-instructions');
 const resultsScreen = document.querySelector('.game-results');
-const resultsTitle = document.querySelector('.results-title');
+const resultsTitleValue = document.querySelector('.results-title');
 const resultsScore = document.querySelector('.results-score-value');
 const resultsGems = document.querySelector('.results-gems-value');
 const gameLevel = document.querySelector('.level-value');
 const tileWidth = 101, tileHeight = 83;
-const gameStates = { notStarted: 0, started: 1, ended: 2 };
+const gameStates = { notStarted: 0, level1: 1, level2: 2, level3: 3, ended: 4 };
 const deathSound = new Audio('sounds/explosion.wav');
 const collectGemSound = new Audio('sounds/collect-gem.wav');
 let currentGameState = gameStates.notStarted;
 let gameTimer, secondsCounter = 300;
 
 class GameObject {
-  constructor(sprite, xPosition, yPosition) {
+  constructor(sprite, xPosition = tileWidth * -1, yPosition = tileHeight * -1) {
     this.sprite = sprite;
+    this.xPosition = xPosition;
+    this.yPosition = yPosition;
+  }
+
+  hide() {
+    this.xPosition = tileWidth * -1;
+    this.yPosition = tileHeight * -1;
+  }
+
+  isHidden() {
+    return (this.xPosition === tileWidth * -1 && this.yPosition === tileHeight * -1);
+  }
+
+  respawn(xPosition, yPosition) {
     this.xPosition = xPosition;
     this.yPosition = yPosition;
   }
@@ -31,10 +45,9 @@ class Player extends GameObject {
   constructor() {
     super('images/char-boy.png', tileWidth * 4, tileHeight * 6);
     this.hearts = 3;
-    this.gemsCounter = 0;
-    this.enabled = true;
-    this.lastMove = '';
     this.hasKey = false;
+    this.gemsCounter = 0;
+    this.lastMove = null;
   }
 
   handleInput(key) {
@@ -86,22 +99,30 @@ class Player extends GameObject {
 
   die() {
     deathSound.play();
-    this.enabled = false;
-    this.xPosition = tileWidth * 4;
-    this.yPosition = tileHeight * 8;
+    this.hide();
+
     this.hearts--;
     updateHeartsCounter();
-
     if (this.hearts === 0) {
       endGame();
     } else {
       const self = this;
-      setTimeout(function () {
-        self.xPosition = tileWidth * 4;
-        self.yPosition = tileHeight * 6;
-        self.enabled = true;
-      }, 1000);
+      setTimeout(function() { self.respawn(); }, 1000);
     }
+  }
+
+  respawn() {
+    super.respawn(tileWidth * 4, tileHeight * 6);
+  }
+}
+
+class Friend extends GameObject {
+  constructor() {
+    super('images/char-cat-girl.png');
+  }
+
+  respawn() {
+    super.respawn(tileWidth * 8, tileHeight * 0);
   }
 }
 
@@ -111,36 +132,38 @@ class Enemy extends GameObject {
     this.speed = getRandomInt(100, 400);
   }
 
-  randomizeProperties() {
-    this.xPosition = tileWidth * -1;
-    this.yPosition = tileHeight * getRandomInt(1, 5);
+  respawn() {
     this.speed = getRandomInt(100, 400);
+    super.respawn(tileWidth * -1, tileHeight * getRandomInt(1, 5));
   }
 
   update(dt) {
     this.xPosition += this.speed * dt;
     if (this.xPosition > tileWidth * 9) {
-      this.randomizeProperties();
+      this.respawn();
     }
+  }
+}
+
+class Key extends GameObject {
+  constructor() {
+    super('images/key.png');
+  }
+
+  respawn() {
+    super.respawn(tileWidth * getRandomInt(0, 8), tileHeight * getRandomInt(1, 5));
   }
 }
 
 class Gem extends GameObject {
   constructor() {
-    super('images/gem-blue.png', tileWidth * 4, tileHeight * 3);
+    super('images/gem-blue.png');
   }
 
   respawn() {
     const gemColors = ['blue', 'green', 'orange'];
     this.sprite = `images/gem-${gemColors[getRandomInt(0,2)]}.png`;
-    this.xPosition = tileWidth * getRandomInt(0, 8);
-    this.yPosition = tileHeight * getRandomInt(1, 5);
-  }
-}
-
-class Blood extends GameObject {
-  constructor(xPosition, yPosition) {
-    super('images/blood-splatter.png', xPosition, yPosition);
+    super.respawn(tileWidth * getRandomInt(0, 8), tileHeight * getRandomInt(1, 5));
   }
 }
 
@@ -150,61 +173,103 @@ class Rock extends GameObject {
   }
 
   respawn() {
-    this.xPosition = tileWidth * getRandomInt(0, 8);
-    this.yPosition = tileHeight * getRandomInt(1, 5);
+    super.respawn(tileWidth * getRandomInt(0, 8), tileHeight * getRandomInt(1, 5));
+  }
+}
+
+class Blood extends GameObject {
+  constructor(xPosition, yPosition) {
+    super('images/blood-splatter.png', xPosition, yPosition);
   }
 }
 
 class LevelSpot extends GameObject {
-  constructor(xPosition = tileWidth * 8, yPosition = 0) {
-    super('images/level-spot.png', xPosition, yPosition);
-    this.level = 1;
+  constructor() {
+    super('images/level-spot.png');
   }
 }
 
-class Key extends GameObject {
-  constructor() {
-    super('images/key.png', tileWidth * getRandomInt(0, 8), tileHeight * getRandomInt(1, 5));
-  }
 
-  respawn() {
-    this.xPosition = tileWidth * getRandomInt(0, 8);
-    this.yPosition = tileHeight * getRandomInt(1, 5);
+function startGame() {
+  instructionsScreen.classList.add('game-instructions-disabled');
+  levelSpot.xPosition = tileWidth * 8;
+  levelSpot.yPosition = tileHeight * 0;
+  key.respawn();
+  gem.respawn();
+  gameTimer = setInterval(updateTimer, 1000);
+  for (let i = 0; i < 5; i++) {
+    rocks.push(new Rock());
+    enemies.push(new Enemy());
   }
+  currentGameState = gameStates.level1;
+}
 
-  hide() {
-    this.xPosition = tileWidth * -1;
-    this.yPosition = tileHeight * -1;
+function levelUp() {
+  switch (currentGameState) {
+    case gameStates.level3:
+      currentGameState = gameStates.ended;
+      endGame();
+      break;
+    case gameStates.level2:
+      friend.respawn();
+    case gameStates.level1:
+      bloodSplatters = [];
+      key.respawn();
+      gem.respawn();
+      rocks.forEach(function(rock) {
+        rock.respawn();
+      });
+      rocks.push(new Rock());
+      enemies.forEach(function(enemy) {
+        enemy.respawn();
+      });
+      enemies.push(new Enemy());
+      (currentGameState === gameStates.level1) ? currentGameState = gameStates.level2 : currentGameState = gameStates.level3 ;
+      gameLevel.textContent = currentGameState;
+      player.respawn();
+      player.sprite = 'images/char-boy.png';
+      player.hasKey = false;
+      break;
   }
 }
 
-class Friend extends GameObject {
-  constructor() {
-    super('images/char-cat-girl.png', tileWidth * -1, tileHeight * -1);
-  }
+function endGame() {
+  clearInterval(gameTimer);
+  enemies.forEach(function(enemy) {
+    enemy.speed = 0;
+  });
 
-  show() {
-    this.xPosition = tileWidth * 8;
-    this.yPosition = tileHeight * 0;
-  }
+  const score = calculateScore();
+  const resultsTitle = generateResultsTitle(score);
+
+  resultsTitleValue.textContent = resultsTitle;
+  resultsScore.innerHTML = `${score}<i class="fas fa-coins"></i>`;
+  resultsGems.innerHTML = `${player.gemsCounter}<i class="far fa-gem"></i>`;
+  resultsScreen.classList.remove('game-results-disabled');
+
+  currentGameState = gameStates.ended;
+}
+
+function restartGame() {
+  window.location.reload(false);
 }
 
 function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-function setTime() {
+function formatTime(time) {
+  return time > 9 ? time : '0' + time;
+}
+
+function updateTimer() {
   secondsCounter--;
-  timerMinutes.textContent = padTime(parseInt(secondsCounter / 60));
-  timerSeconds.textContent = padTime(secondsCounter % 60);
+  timerMinutes.textContent = formatTime(parseInt(secondsCounter / 60));
+  timerSeconds.textContent = formatTime(secondsCounter % 60);
 
   if (secondsCounter === 0) {
     endGame();
   }
-}
-
-function padTime(time) {
-  return time > 9 ? time : '0' + time;
 }
 
 function updateGemsCounter() {
@@ -220,86 +285,24 @@ function calculateScore() {
   return ((player.gemsCounter * 300) + (player.hearts * 400));
 }
 
-function levelUp() {
-  if (levelSpot.level === 3) {
-    endGame();
+function generateResultsTitle(score) {
+  if (score > 5000) {
+    return ('GREAT, YOU ROCK!');
+  } else if (score > 3000) {
+    return ('GOOD JOB!');
   } else {
-    if (levelSpot.level === 2) {
-      friend.show();
-    }
-    bloodSplatters = [];
-    key.respawn();
-    gem.respawn();
-    rocks.forEach(function(rock) {
-      rock.respawn();
-    });
-    rocks.push(new Rock());
-    allEnemies.forEach(function(enemy) {
-      enemy.randomizeProperties();
-    });
-    allEnemies.push(new Enemy());
-    levelSpot.level++;
-    gameLevel.textContent = levelSpot.level;
-    player.xPosition = tileWidth * 4;
-    player.yPosition = tileHeight * 6;
-    player.sprite = 'images/char-boy.png';
-    player.hasKey = false;
-    player.enabled = true;
+    return ('KEEP PRACTICING!');
   }
 }
 
-function startGame() {
-  instructionsScreen.classList.add('game-instructions-disabled');
-  levelSpot.xPosition = tileWidth * 8;
-  levelSpot.yPosition = tileHeight * 0;
-  key.respawn();
-  gem.respawn();
-  gameTimer = setInterval(setTime, 1000);
-  for (let i = 0; i < 5; i++) {
-    rocks.push(new Rock());
-    allEnemies.push(new Enemy());
-  }
-  currentGameState = gameStates.started;
-}
 
-function endGame() {
-  clearInterval(gameTimer);
-  player.enabled = false;
-  for (enemy of allEnemies) {
-    enemy.speed = 0;
-  }
-
-  const score = calculateScore();
-  if (score < 2000) {
-    resultsTitle.textContent = 'KEEP PRACTICING!'
-  } else if (score < 4000) {
-    resultsTitle.textContent = 'GOOD JOB!'
-  } else {
-    resultsTitle.textContent = 'GREAT, YOU ROCK!'
-  }
-  resultsScore.innerHTML = `${score}<i class="fas fa-coins"></i>`;
-  resultsGems.innerHTML = `${player.gemsCounter}<i class="far fa-gem"></i>`;
-  resultsScreen.classList.remove('game-results-disabled');
-
-  currentGameState = gameStates.ended;
-}
-
-function restartGame() {
-  window.location.reload(false);
-}
-
-let key = new Key();
-key.hide();
-let gem = new Gem();
-gem.xPosition = tileWidth * -1;
-gem.yPosition = tileHeight * -1;
 let player = new Player();
 let friend = new Friend();
+let key = new Key();
+let gem = new Gem();
 let levelSpot = new LevelSpot();
-levelSpot.xPosition = tileWidth * -1;
-levelSpot.yPosition = tileHeight * -1;
 let rocks = [];
-let allEnemies = [];
+let enemies = [];
 let bloodSplatters = [];
 
 document.addEventListener('keyup', function(e) {
@@ -317,8 +320,10 @@ document.addEventListener('keyup', function(e) {
         startGame();
       }
       break;
-    case gameStates.started:
-      if (player.enabled) {
+    case gameStates.level1:
+    case gameStates.level2:
+    case gameStates.level3:
+      if (!player.isHidden()) {
         player.handleInput(allowedKeys[e.keyCode]);
       }
       break;
