@@ -11,7 +11,11 @@ const gameLevel = document.querySelector('.level-value');
 const tileWidth = 101, tileHeight = 83;
 const gameStates = { notStarted: 0, level1: 1, level2: 2, level3: 3, ended: 4 };
 const deathSound = new Audio('sounds/explosion.wav');
+const collectKeySound = new Audio('sounds/collect-key.wav');
 const collectGemSound = new Audio('sounds/collect-gem.wav');
+const levelUpSound = new Audio('sounds/level-up.wav');
+const jingleWinSound = new Audio('sounds/jingle-win.wav');
+const jingleLoseSound = new Audio('sounds/jingle-lose.wav');
 let currentGameState = gameStates.notStarted;
 let gameTimer, secondsCounter = 300;
 
@@ -92,7 +96,7 @@ class Player extends GameObject {
   }
 
   takeKey() {
-    collectGemSound.cloneNode().play();
+    collectKeySound.play();
     this.sprite = 'images/char-boy-key.png';
     this.hasKey = true;
   }
@@ -241,10 +245,12 @@ function endGame() {
 
   const score = calculateScore();
   const resultsTitle = generateResultsTitle(score);
+  const jingleSound = getJingleSound();
 
   resultsTitleValue.textContent = resultsTitle;
   resultsScore.innerHTML = `${score}<i class="fas fa-coins"></i>`;
   resultsGems.innerHTML = `${player.gemsCounter}<i class="far fa-gem"></i>`;
+  jingleSound.play();
   resultsScreen.classList.remove('game-results-disabled');
 
   currentGameState = gameStates.ended;
@@ -292,6 +298,14 @@ function generateResultsTitle(score) {
     return ('GOOD JOB!');
   } else {
     return ('KEEP PRACTICING!');
+  }
+}
+
+function getJingleSound() {
+  if (player.hearts > 0) {
+    return jingleWinSound;
+  } else {
+    return jingleLoseSound;
   }
 }
 

@@ -86,9 +86,8 @@ var Engine = (function(global) {
 
     if (player.hasKey && levelSpot.yPosition === player.yPosition && levelSpot.xPosition === player.xPosition) {
       player.hide();
-      if (levelSpot.level === 3) {
-        friend.hide();
-      }
+      if (currentGameState === 3) { friend.hide(); }
+      levelUpSound.play();
       setTimeout(levelUp, 1000);
     }
   }
