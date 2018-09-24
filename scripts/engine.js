@@ -71,6 +71,13 @@ var Engine = (function(global) {
       }
     });
 
+    if (levelSpot.yPosition === player.yPosition && levelSpot.xPosition === player.xPosition) {
+      player.enabled = false;
+      player.xPosition = tileWidth * -1;
+      player.yPosition = tileHeight * -1;
+      setTimeout(levelUp, 1000);
+    }
+
     if (gem.yPosition === player.yPosition && gem.xPosition === player.xPosition) {
       player.takeGem();
       gem.respawn();
@@ -106,6 +113,7 @@ var Engine = (function(global) {
 
   // This function goes through the game objects and draws them on the canvas.
   function renderEntities() {
+    levelSpot.render(0, -39);
     bloodSplatters.forEach(function(blood) {
       blood.render(0, -38);
     });
@@ -138,7 +146,8 @@ var Engine = (function(global) {
       'images/gem-green.png',
       'images/gem-orange.png',
       'images/blood-splatter.png',
-      'images/rock.png'
+      'images/rock.png',
+      'images/level-spot.png'
   ]);
   Resources.onReady(init);
 

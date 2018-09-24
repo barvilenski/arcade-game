@@ -7,6 +7,7 @@ const resultsScreen = document.querySelector('.game-results');
 const resultsTitle = document.querySelector('.results-title');
 const resultsScore = document.querySelector('.results-score-value');
 const resultsGems = document.querySelector('.results-gems-value');
+const gameLevel = document.querySelector('.level-value');
 const tileWidth = 101, tileHeight = 83;
 const gameStates = { notStarted: 0, started: 1, ended: 2 };
 const deathSound = new Audio('sounds/explosion.wav');
@@ -140,6 +141,18 @@ class Rock extends GameObject {
   constructor() {
     super('images/rock.png', tileWidth * getRandomInt(0, 8), tileHeight * getRandomInt(1, 5));
   }
+
+  respawn() {
+    this.xPosition = tileWidth * getRandomInt(0, 8);
+    this.yPosition = tileHeight * getRandomInt(1, 5);
+  }
+}
+
+class LevelSpot extends GameObject {
+  constructor(xPosition = tileWidth * 8, yPosition = 0) {
+    super('images/level-spot.png', xPosition, yPosition);
+    this.level = 1;
+  }
 }
 
 function getRandomInt(min, max) {
@@ -173,10 +186,32 @@ function calculateScore() {
   return ((player.gemsCounter * 300) + (player.hearts * 400));
 }
 
+function levelUp() {
+  if (levelSpot.level === 3) {
+    endGame();
+  } else {
+    bloodSplatters = [];
+    gem.respawn();
+    rocks.forEach(function(rock) {
+      rock.respawn();
+    });
+    rocks.push(new Rock());
+    allEnemies.forEach(function(enemy) {
+      enemy.randomizeProperties();
+    });
+    allEnemies.push(new Enemy());
+    player.xPosition = tileWidth * 4;
+    player.yPosition = tileHeight * 6;
+    levelSpot.level++;
+    gameLevel.textContent = levelSpot.level;
+    player.enabled = true;
+  }
+}
+
 function startGame() {
   instructionsScreen.classList.add('game-instructions-disabled');
   gameTimer = setInterval(setTime, 1000);
-  for (let i = 0; i < 6; i++) {
+  for (let i = 0; i < 5; i++) {
     rocks.push(new Rock());
     allEnemies.push(new Enemy());
   }
@@ -211,6 +246,7 @@ function restartGame() {
 
 let gem = new Gem();
 let player = new Player();
+let levelSpot = new LevelSpot();
 let rocks = [];
 let allEnemies = [];
 let bloodSplatters = [];
