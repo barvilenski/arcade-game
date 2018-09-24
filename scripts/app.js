@@ -178,6 +178,17 @@ class Key extends GameObject {
   }
 }
 
+class Friend extends GameObject {
+  constructor() {
+    super('images/char-cat-girl.png', tileWidth * -1, tileHeight * -1);
+  }
+
+  show() {
+    this.xPosition = tileWidth * 8;
+    this.yPosition = tileHeight * 0;
+  }
+}
+
 function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
@@ -213,6 +224,9 @@ function levelUp() {
   if (levelSpot.level === 3) {
     endGame();
   } else {
+    if (levelSpot.level === 2) {
+      friend.show();
+    }
     bloodSplatters = [];
     key.respawn();
     gem.respawn();
@@ -280,6 +294,7 @@ let gem = new Gem();
 gem.xPosition = tileWidth * -1;
 gem.yPosition = tileHeight * -1;
 let player = new Player();
+let friend = new Friend();
 let levelSpot = new LevelSpot();
 levelSpot.xPosition = tileWidth * -1;
 levelSpot.yPosition = tileHeight * -1;

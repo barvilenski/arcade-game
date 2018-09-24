@@ -78,6 +78,8 @@ var Engine = (function(global) {
       player.enabled = false;
       player.xPosition = tileWidth * 4;
       player.yPosition = tileHeight * 8;
+      friend.xPosition = tileWidth * -1;
+      friend.yPosition = tileHeight * -1;
       setTimeout(levelUp, 1000);
     }
 
@@ -130,10 +132,11 @@ var Engine = (function(global) {
     });
     gem.render(17, 18, 68, 110);
     key.render(10, 10, 81, 137);
+    friend.render(0, -12);
+    player.render(0, -12);
     allEnemies.forEach(function(enemy) {
       enemy.render(0, -22);
     });
-    player.render(0, -12);
   }
 
   /* This function does nothing. It is a good place to handle game reset states
@@ -158,7 +161,8 @@ var Engine = (function(global) {
       'images/rock.png',
       'images/level-spot.png',
       'images/key.png',
-      'images/char-boy-key.png'
+      'images/char-boy-key.png',
+      'images/char-cat-girl.png'
   ]);
   Resources.onReady(init);
 
