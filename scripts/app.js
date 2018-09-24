@@ -34,6 +34,7 @@ class Player extends GameObject {
     this.gemsCounter = 0;
     this.enabled = true;
     this.lastMove = '';
+    this.hasKey = false;
   }
 
   handleInput(key) {
@@ -75,6 +76,12 @@ class Player extends GameObject {
     collectGemSound.cloneNode().play();
     this.gemsCounter++;
     updateGemsCounter();
+  }
+
+  takeKey() {
+    collectGemSound.cloneNode().play();
+    this.sprite = 'images/char-boy-key.png';
+    this.hasKey = true;
   }
 
   die() {
@@ -155,6 +162,22 @@ class LevelSpot extends GameObject {
   }
 }
 
+class Key extends GameObject {
+  constructor() {
+    super('images/key.png', tileWidth * getRandomInt(0, 8), tileHeight * getRandomInt(1, 5));
+  }
+
+  respawn() {
+    this.xPosition = tileWidth * getRandomInt(0, 8);
+    this.yPosition = tileHeight * getRandomInt(1, 5);
+  }
+
+  hide() {
+    this.xPosition = tileWidth * -1;
+    this.yPosition = tileHeight * -1;
+  }
+}
+
 function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
@@ -191,6 +214,7 @@ function levelUp() {
     endGame();
   } else {
     bloodSplatters = [];
+    key.respawn();
     gem.respawn();
     rocks.forEach(function(rock) {
       rock.respawn();
@@ -200,16 +224,22 @@ function levelUp() {
       enemy.randomizeProperties();
     });
     allEnemies.push(new Enemy());
-    player.xPosition = tileWidth * 4;
-    player.yPosition = tileHeight * 6;
     levelSpot.level++;
     gameLevel.textContent = levelSpot.level;
+    player.xPosition = tileWidth * 4;
+    player.yPosition = tileHeight * 6;
+    player.sprite = 'images/char-boy.png';
+    player.hasKey = false;
     player.enabled = true;
   }
 }
 
 function startGame() {
   instructionsScreen.classList.add('game-instructions-disabled');
+  levelSpot.xPosition = tileWidth * 8;
+  levelSpot.yPosition = tileHeight * 0;
+  key.respawn();
+  gem.respawn();
   gameTimer = setInterval(setTime, 1000);
   for (let i = 0; i < 5; i++) {
     rocks.push(new Rock());
@@ -244,9 +274,15 @@ function restartGame() {
   window.location.reload(false);
 }
 
+let key = new Key();
+key.hide();
 let gem = new Gem();
+gem.xPosition = tileWidth * -1;
+gem.yPosition = tileHeight * -1;
 let player = new Player();
 let levelSpot = new LevelSpot();
+levelSpot.xPosition = tileWidth * -1;
+levelSpot.yPosition = tileHeight * -1;
 let rocks = [];
 let allEnemies = [];
 let bloodSplatters = [];

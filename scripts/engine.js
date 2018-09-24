@@ -62,6 +62,9 @@ var Engine = (function(global) {
       if (rock.yPosition === gem.yPosition && rock.xPosition === gem.xPosition) {
         gem.respawn();
       }
+      if (rock.yPosition === key.yPosition && rock.xPosition === key.xPosition) {
+        key.respawn();
+      }
     });
 
     allEnemies.forEach(function(enemy) {
@@ -71,16 +74,21 @@ var Engine = (function(global) {
       }
     });
 
-    if (levelSpot.yPosition === player.yPosition && levelSpot.xPosition === player.xPosition) {
+    if (levelSpot.yPosition === player.yPosition && levelSpot.xPosition === player.xPosition && player.hasKey) {
       player.enabled = false;
-      player.xPosition = tileWidth * -1;
-      player.yPosition = tileHeight * -1;
+      player.xPosition = tileWidth * 4;
+      player.yPosition = tileHeight * 8;
       setTimeout(levelUp, 1000);
     }
 
     if (gem.yPosition === player.yPosition && gem.xPosition === player.xPosition) {
       player.takeGem();
       gem.respawn();
+    }
+
+    if (key.yPosition === player.yPosition && key.xPosition === player.xPosition) {
+      player.takeKey();
+      key.hide();
     }
   }
 
@@ -121,6 +129,7 @@ var Engine = (function(global) {
       rock.render(10, -10, 91, 154);
     });
     gem.render(17, 18, 68, 110);
+    key.render(10, 10, 81, 137);
     allEnemies.forEach(function(enemy) {
       enemy.render(0, -22);
     });
@@ -147,7 +156,9 @@ var Engine = (function(global) {
       'images/gem-orange.png',
       'images/blood-splatter.png',
       'images/rock.png',
-      'images/level-spot.png'
+      'images/level-spot.png',
+      'images/key.png',
+      'images/char-boy-key.png'
   ]);
   Resources.onReady(init);
 
