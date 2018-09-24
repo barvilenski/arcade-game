@@ -10,12 +10,12 @@ const resultsGems = document.querySelector('.results-gems-value');
 const gameLevel = document.querySelector('.level-value');
 const tileWidth = 101, tileHeight = 83;
 const gameStates = { notStarted: 0, level1: 1, level2: 2, level3: 3, ended: 4 };
-const deathSound = new Audio('sounds/explosion.wav');
-const collectKeySound = new Audio('sounds/collect-key.wav');
-const collectGemSound = new Audio('sounds/collect-gem.wav');
-const levelUpSound = new Audio('sounds/level-up.wav');
-const jingleWinSound = new Audio('sounds/jingle-win.wav');
-const jingleLoseSound = new Audio('sounds/jingle-lose.wav');
+const deathSound = new Audio('sounds/explosion.mp3');
+const collectKeySound = new Audio('sounds/collect-key.mp3');
+const collectGemSound = new Audio('sounds/collect-gem.mp3');
+const levelUpSound = new Audio('sounds/level-up.mp3');
+const jingleWinSound = new Audio('sounds/jingle-win.mp3');
+const jingleLoseSound = new Audio('sounds/jingle-lose.mp3');
 let currentGameState = gameStates.notStarted;
 let gameTimer, secondsCounter = 300;
 
