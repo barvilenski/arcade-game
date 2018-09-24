@@ -55,6 +55,15 @@ var Engine = (function(global) {
    * If so, it updates the game objects' data accordingly.
    */
   function checkCollisions() {
+    rocks.forEach(function(rock) {
+      if (rock.yPosition === player.yPosition && rock.xPosition === player.xPosition) {
+        player.moveBack();
+      }
+      if (rock.yPosition === gem.yPosition && rock.xPosition === gem.xPosition) {
+        gem.respawn();
+      }
+    });
+
     allEnemies.forEach(function(enemy) {
       if (enemy.yPosition === player.yPosition && Math.abs(enemy.xPosition - player.xPosition) <= 80) {
         bloodSplatters.push(new Blood(player.xPosition, player.yPosition));
@@ -100,6 +109,9 @@ var Engine = (function(global) {
     bloodSplatters.forEach(function(blood) {
       blood.render(0, -38);
     });
+    rocks.forEach(function(rock) {
+      rock.render(10, -10, 91, 154);
+    });
     gem.render(17, 18, 68, 110);
     allEnemies.forEach(function(enemy) {
       enemy.render(0, -22);
@@ -125,7 +137,8 @@ var Engine = (function(global) {
       'images/gem-blue.png',
       'images/gem-green.png',
       'images/gem-orange.png',
-      'images/blood-splatter.png'
+      'images/blood-splatter.png',
+      'images/rock.png'
   ]);
   Resources.onReady(init);
 

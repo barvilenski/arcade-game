@@ -32,9 +32,11 @@ class Player extends GameObject {
     this.hearts = 3;
     this.gemsCounter = 0;
     this.enabled = true;
+    this.lastMove = '';
   }
 
   handleInput(key) {
+    this.lastMove = key;
     switch (key) {
       case 'up':
         this.yPosition -= (this.yPosition > 0) ? tileHeight : 0;
@@ -47,6 +49,23 @@ class Player extends GameObject {
         break;
       case 'right':
         this.xPosition += (this.xPosition < tileWidth * 8) ? tileWidth : 0;
+        break;
+    }
+  }
+
+  moveBack() {
+    switch (this.lastMove) {
+      case 'up':
+        this.yPosition += tileHeight;
+        break;
+      case 'down':
+        this.yPosition -= tileHeight;
+        break;
+      case 'left':
+        this.xPosition += tileWidth;
+        break;
+      case 'right':
+        this.xPosition -= tileWidth;
         break;
     }
   }
@@ -117,6 +136,12 @@ class Blood extends GameObject {
   }
 }
 
+class Rock extends GameObject {
+  constructor() {
+    super('images/rock.png', tileWidth * getRandomInt(0, 8), tileHeight * getRandomInt(1, 5));
+  }
+}
+
 function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
@@ -152,6 +177,7 @@ function startGame() {
   instructionsScreen.classList.add('game-instructions-disabled');
   gameTimer = setInterval(setTime, 1000);
   for (let i = 0; i < 6; i++) {
+    rocks.push(new Rock());
     allEnemies.push(new Enemy());
   }
   currentGameState = gameStates.started;
@@ -185,6 +211,7 @@ function restartGame() {
 
 let gem = new Gem();
 let player = new Player();
+let rocks = [];
 let allEnemies = [];
 let bloodSplatters = [];
 
