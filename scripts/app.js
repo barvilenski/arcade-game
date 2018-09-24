@@ -12,7 +12,7 @@ const gameStates = { notStarted: 0, started: 1, ended: 2 };
 const deathSound = new Audio('sounds/explosion.wav');
 const collectGemSound = new Audio('sounds/collect-gem.wav');
 let currentGameState = gameStates.notStarted;
-let gameTimer, secondsCounter = 120;
+let gameTimer, secondsCounter = 300;
 
 class GameObject {
   constructor(sprite, xPosition, yPosition) {

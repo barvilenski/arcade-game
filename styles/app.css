@@ -53,6 +53,12 @@ header {
   font-family: 'Frijole', cursive;
 }
 
+.level {
+  color: midnightblue;
+  font-size: 22px;
+  font-family: 'Press Start 2P', cursive;
+}
+
 .game-stats {
   display: flex;
   align-items: flex-end;
@@ -83,13 +89,13 @@ header {
 /* ------------------ Game Container ------------------ */
 .game-container {
   position: absolute;
-  top: 110px;
+  top: 140px;
 }
 
 /* ----------- Instructions & Results Screens --------- */
 .game-instructions, .game-results {
   position: absolute;
-  top: 330px;
+  top: 360px;
   left: 0;
   right: 0;
   width: fit-content;
@@ -117,6 +123,10 @@ header {
   border-radius: 10px;
   padding: 10px;
   margin-top: 14px;
+}
+
+.instructions-content {
+  text-align: left;
 }
 
 .results-stats {
