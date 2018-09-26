@@ -125,11 +125,11 @@ var Engine = (function(global) {
     bloodSplatters.forEach(function(blood) {
       blood.render(0, -38);
     });
+    gem.render(17, 18, 68, 110);
+    key.render(10, 10, 81, 137);
     rocks.forEach(function(rock) {
       rock.render(10, -10, 91, 154);
     });
-    gem.render(17, 18, 68, 110);
-    key.render(10, 10, 81, 137);
     friend.render(0, -12);
     player.render(0, -12);
     enemies.forEach(function(enemy) {
