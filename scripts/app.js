@@ -288,13 +288,7 @@ function updateHeartsCounter() {
 }
 
 function calculateScore() {
-  let score = 0;
-
-  score += (secondsCounter * 10);
-  score += (player.hearts * 800);
-  score += (player.gemsCounter * 200);
-
-  return score;
+  return ((secondsCounter * 10) + (player.hearts * 800) + (player.gemsCounter * 200));
 }
 
 function generateResultsTitle(score) {
