@@ -288,16 +288,25 @@ function updateHeartsCounter() {
 }
 
 function calculateScore() {
-  return ((player.gemsCounter * 300) + (player.hearts * 400));
+  let score = 0;
+
+  score += (secondsCounter * 10);
+  score += (player.hearts * 800);
+  score += (player.gemsCounter * 200);
+
+  return score;
 }
 
 function generateResultsTitle(score) {
-  if (score > 5000) {
-    return ('GREAT, YOU ROCK!');
-  } else if (score > 3000) {
+  if (player.hearts === 0 || secondsCounter === 0) {
+    return ('YOU LOST, MAYBE NEXT TIME!');
+  }
+  else if (score < 4000) {
+    return ('NICE, BUT YOU CAN DO BETTER!');
+  } else if (score < 6000) {
     return ('GOOD JOB!');
   } else {
-    return ('KEEP PRACTICING!');
+    return ('GREAT, YOU ROCK!');
   }
 }
 
